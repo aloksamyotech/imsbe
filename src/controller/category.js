@@ -10,7 +10,7 @@ export const create = async (req, res) => {
       error: error,
     });
   }
-};
+}
 
 export const fetch_category = async (req, res) => {
   try {
