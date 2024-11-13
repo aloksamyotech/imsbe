@@ -39,11 +39,9 @@ export const save = async (req, res) => {
       categoryName: category.catnm,
       unitId: unit._id,
       unitName: unit.unitnm,
-      imagePath: imagePath, 
     });
-    const response = await productModel.save();
-    console.log(response);
-
+    const response= await productModel.save();
+    return response;
   } catch (error) {
     console.error("Error saving product:", error);
   }

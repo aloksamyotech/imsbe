@@ -98,7 +98,7 @@ const updateProductQuantity = async (productId, quantity) => {
       if (product.quantity < quantity) {
         throw new Error('Not enough stock available');
       }
-      product.quantity = (Number(product.quantity) || 0) - Number(quantity);
+      product.quantity -=  Number(quantity);
       await product.save();
   };
 

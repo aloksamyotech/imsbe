@@ -61,9 +61,6 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    // imagePath: {
-    //   type: String,
-    // },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
