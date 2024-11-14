@@ -1,5 +1,5 @@
 import ProductSchemaModel from "../models/products.js";
-import { tableNames } from "../common/constant.js";
+import { messages, tableNames } from "../common/constant.js";
 import CategorySchemaModel from "../models/category.js";
 import UnitSchemaModel from "../models/unit.js";
 
@@ -19,12 +19,12 @@ export const save = async (req, res) => {
  
     const category = await CategorySchemaModel.findById(categoryId);
     if (!category) {
-      throw new Error("Category not found");
+      throw new Error(messages.data_not_found);
     }
 
     const unit = await UnitSchemaModel.findById(unitId);
     if (!unit) {
-      throw new Error("Unit not found");
+      throw new Error(messages.data_not_found);
     }
 
     const productModel = new ProductSchemaModel({
@@ -39,13 +39,10 @@ export const save = async (req, res) => {
       categoryName: category.catnm,
       unitId: unit._id,
       unitName: unit.unitnm,
-      imagePath: imagePath, 
     });
-    const response = await productModel.save();
-    console.log(response);
-
+    return await productModel.save();
   } catch (error) {
-    console.error("Error saving product:", error);
+    throw new Error(messages.data_add_error, error);
   }
 };
 
@@ -86,11 +83,9 @@ export const fetch = async (req) => {
       { $sort: { createdAt: -1 } },
     ];
 
-    const productsList = await ProductSchemaModel.aggregate(pipeline);
-    return productsList;
+   return await ProductSchemaModel.aggregate(pipeline);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    throw new Error("Failed to fetch products: " + error.message);
+    throw new Error(messages.fetching_failed + error.message);
   }
 };
 
@@ -102,19 +97,18 @@ export const update = async (id, updateData) => {
       { new: true }
     );
     if (!updatedProduct || updatedProduct.isDeleted) {
-      throw new Error("Product not found or already deleted");
+      throw new Error(messages.data_not_found);
     }
     return updatedProduct;
   } catch (error) {
-    console.error("Error updating product:", error);
-    throw new Error("Failed to update product: " + error.message);
+    throw new Error(messages.data_update_error + error.message);
   }
 };
 
 export const deleteById = async (id) => {
   const product = await ProductSchemaModel.findById(id);
   if (!product) {
-    throw new Error("Product not found");
+    throw new Error(messages.data_not_found);
   }
   product.isDeleted = true;
   await product.save();

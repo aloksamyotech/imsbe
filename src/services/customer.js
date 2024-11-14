@@ -1,3 +1,4 @@
+import { messages } from "../common/constant.js";
 import CustomerSchemaModel from "../models/customer.js";
 
 export const save = async (req) => {
@@ -7,7 +8,7 @@ export const save = async (req) => {
       email,
       phone,
       address,
-      isWholesale,  
+      isWholesale,
       accountHolder,
       accountNumber,
       bankName,
@@ -18,7 +19,7 @@ export const save = async (req) => {
       email,
       phone,
       address,
-      isWholesale,  
+      isWholesale,
       accountHolder,
       accountNumber,
       bankName,
@@ -26,7 +27,6 @@ export const save = async (req) => {
 
     return await customerModel.save();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -38,7 +38,7 @@ export const fetch = async (req) => {
 
     if (isWholesale !== undefined) {
       customersList = await CustomerSchemaModel.find({
-        isWholesale: isWholesale,  
+        isWholesale: isWholesale,
         isDeleted: false,
       });
     } else {
@@ -48,34 +48,31 @@ export const fetch = async (req) => {
     }
     return customersList;
   } catch (error) {
-    console.error("Error fetching customers:", error);
-    throw new Error("Failed to fetch customers");
+    throw new Error(messages.fetching_failed);
   }
 };
 
 export const update = async (id, updateData) => {
   try {
-      const updatedCustomer = await CustomerSchemaModel.findByIdAndUpdate(
-          id,
-          updateData,
-          { new: true }
-      );
-      if (!updatedCustomer || updatedCustomer.isDeleted) {
-          throw new Error("Customer not found or already deleted");
-      }
-      return updatedCustomer;
+    const updatedCustomer = await CustomerSchemaModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+    if (!updatedCustomer || updatedCustomer.isDeleted) {
+      throw new Error(messages.data_not_found);
+    }
+    return updatedCustomer;
   } catch (error) {
-      console.error("Error updating Customer:", error);
-      throw new Error("Failed to update Customer");
+    throw new Error(messages.data_update_error);
   }
 };
 
 export const deleteById = async (id) => {
   const customer = await CustomerSchemaModel.findById(id);
   if (!customer) {
-    throw new Error("customer not found");
+    throw new Error(messages.data_not_found);
   }
   customer.isDeleted = true;
-  await customer.save();
-  return customer;
+  return await customer.save();
 };

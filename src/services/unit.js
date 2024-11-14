@@ -1,3 +1,4 @@
+import { messages } from "../common/constant.js";
 import UnitSchemaModel from "../models/unit.js";
 import url from "url";
 
@@ -10,7 +11,6 @@ export const save = async (req) => {
     });
     return await unitModel.save();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -21,7 +21,6 @@ export const fetch = async (req) => {
     const unitList = await UnitSchemaModel.find(condition_obj);
     return unitList;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -35,7 +34,6 @@ export const update = async (id, updateData) => {
     );
     return updatedUnit;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -43,7 +41,7 @@ export const update = async (id, updateData) => {
 export const deleteById = async (id) => {
   const unit = await UnitSchemaModel.findById(id);
   if (!unit) {
-    throw new Error("unit not found");
+    throw new Error(messages.data_not_found);
   }
   unit.isDeleted = true;
   await unit.save();

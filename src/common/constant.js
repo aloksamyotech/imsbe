@@ -30,7 +30,6 @@ export const tableNames = {
 };
 
 export const messages = {
-  not_found: "User not found",
   already_registered: "User already registered",
   invalid_credentials: "Invalid email, username or password.",
   password_reset_success: "Password reset link has been sent to your email.",
@@ -38,10 +37,17 @@ export const messages = {
   registration_success: "Registration successful! You can now log in.",
   invalid_email_format: "Please provide a valid email address.",
   data_update_success: "Data updated successfully.",
+  data_add_success: "Data added successfully",
+  data_add_error: "Data not added",
   data_update_error: "Data not updated",
   data_deletion_success: "Data deleted successfully.",
+  data_deletion_error: "Data deletion failed.",
   data_not_found: "Requested data not found.",
   server_error: "An unexpected error occurred. Please try again later.",
   bad_request: "The request could not be understood by the server.",
   unauthorized_access: "You do not have permission to access this resource.",
+  fetching_failed : "Failed to fetch data",
+  required : "This is required.",
+  not_available: "Data not available",
+  invalid_format: "Invalid data format",
 };
