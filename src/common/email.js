@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import path from 'path';
 import dotenv from 'dotenv';
+import { messages } from './constant.js';
 
 dotenv.config();
 
@@ -28,9 +29,9 @@ const sendEmail = async (email, invoicePath) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Invoice sent successfully!');
+    return(messages.data_add_success);
   } catch (error) {
-    console.error('Error sending invoice:', error);
+    return error;
   }
 };
 

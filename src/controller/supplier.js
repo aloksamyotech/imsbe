@@ -6,9 +6,8 @@ export const create = async (req, res) => {
     const supplierResponse = await save(req);
     res.status(statusCodes.created).json(supplierResponse); 
   } catch (error) {
-    console.error("Error creating supplier:", error);
     res.status(statusCodes.internalServerError).json({
-      message: "Failed to create supplier",
+      message: messages.data_add_error,
       error: error.message
     });
   }
@@ -18,13 +17,12 @@ export const fetch_supplier = async (req, res) => {
   try {
     const supplierResponse = await fetch(req);
     if (supplierResponse.length === 0) {
-      return res.status(statusCodes.notFound).json({ message: "No suppliers found." });
+      return res.status(statusCodes.notFound).json({ message: messages.data_not_found });
     }
     res.status(statusCodes.ok).json(supplierResponse);
   } catch (error) {
-    console.error("Error fetching suppliers:", error);
     res.status(statusCodes.internalServerError).json({
-      message: "An error occurred while fetching suppliers.",
+      message: messages.fetching_failed,
       error: error.message
     });
   }
@@ -33,7 +31,7 @@ export const fetch_supplier = async (req, res) => {
 export const updateSupplier = async (req, res) => {
   const id  = req.params.id; 
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: 'Supplier ID is required' });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
   const updateData = req.body; 
   try {
@@ -43,9 +41,8 @@ export const updateSupplier = async (req, res) => {
     }
     return res.status(statusCodes.ok).json(updatedSupplier);
   } catch (error) {
-    console.error("Error updating supplier:", error);
     return res.status(statusCodes.internalServerError).json({ 
-      message: "Failed to update supplier", 
+      message: messages.data_update_error, 
       error: error.message 
     });
   }
@@ -54,7 +51,7 @@ export const updateSupplier = async (req, res) => {
 export const deleteSupplier = async (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: "Supplier ID is required" });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
 
   try {
@@ -64,9 +61,8 @@ export const deleteSupplier = async (req, res) => {
     if (error.message === messages.not_found) {
       return res.status(statusCodes.notFound).json({ message: messages.data_not_found });
     }
-    console.error("Error deleting supplier:", error);
     res.status(statusCodes.internalServerError).json({ 
-      message: "Failed to delete supplier", 
+      message: messages.data_deletion_error, 
       error: error.message 
     });
   }

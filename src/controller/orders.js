@@ -7,8 +7,7 @@ export const create = async (req, res) => {
     const orderResponse = await save(req);
     res.status(statusCodes.created).json(orderResponse);
   } catch (error) {
-    console.log(error);
-    res.status(statusCodes.internalServerError).json({error: error, });
+    res.status(statusCodes.internalServerError).json({error: error });
   }
 };
 
@@ -19,29 +18,26 @@ export const fetch_order = async (req, res) => {
       res.status(statusCodes.ok).json(orderResponse);
     }
   } catch (error) {
-    console.error(error);
     res.status(statusCodes.internalServerError).json({
-      error: error.message || "An error occurred while fetching the orders.",
+     message : messages.fetching_failed
     });
   }
 };
 
 export const fetchById_order = async (req, res) => {
   const id = req.params.id;
-  console.log("Fetching order with ID:", id);
   try {
     const orderResponse = await fetchById(id); 
     if (orderResponse) {
       res.status(statusCodes.ok).json(orderResponse);
     } else {
       res.status(statusCodes.notFound).json({
-        message: "Order not found.",
+        message: messages.data_not_found
       });
     }
   } catch (error) {
-    console.error("Error fetching order:", error);
     res.status(statusCodes.internalServerError).json({
-      error: error.message || "An error occurred while fetching the order.",
+      message :messages.fetching_failed
     });
   }
 };
@@ -50,7 +46,7 @@ export const fetchById_order = async (req, res) => {
 export const deleteOrder = async (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: "order ID is required" });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
   try {
     await deleteById(id);
@@ -59,8 +55,7 @@ export const deleteOrder = async (req, res) => {
     if (error.message === messages.not_found) {
       return res .status(statusCodes.notFound) .json({ message: messages.data_not_found });
     }
-    console.error("Error deleting order:", error);
-    res.status(statusCodes.internalServerError).json({message: "Failed to delete order", error: error.message,
+    res.status(statusCodes.internalServerError).json({message: messages.bad_request
     });
   }
 };
@@ -72,7 +67,7 @@ export const getCustomerProductReport = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(statusCodes.internalServerError).json({
-      error: error.message || "An error occurred while fetching the data.",
+      message : messages.fetching_failed
     });
   }
 };

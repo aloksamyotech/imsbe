@@ -17,9 +17,8 @@ export const fetch_product = async (req, res) => {
       res.status(statusCodes.ok).json(productResponse);
     }
   } catch (error) {
-    console.error(error);
     res.status(statusCodes.internalServerError).json({
-      error: error.message || "An error occurred while fetching the products.",
+      message : messages.fetching_failed
     });
   }
 };
@@ -27,7 +26,7 @@ export const fetch_product = async (req, res) => {
 export const updateProduct = async (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: "product ID is required" });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
   const updateData = req.body;
   try {
@@ -37,10 +36,8 @@ export const updateProduct = async (req, res) => {
     }
     return res.status(statusCodes.ok).json(updatedProduct);
   } catch (error) {
-    console.error("Error updating product:", error);
     return res.status(statusCodes.internalServerError).json({
-      message: "Failed to update product",
-      error: error.message,
+      message: messages.data_update_error
     });
   }
 };
@@ -48,7 +45,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: "product ID is required" });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
   try {
     await deleteById(id);
@@ -57,32 +54,8 @@ export const deleteProduct = async (req, res) => {
     if (error.message === messages.not_found) {
       return res .status(statusCodes.notFound) .json({ message: messages.data_not_found });
     }
-    console.error("Error deleting product:", error);
-    res.status(statusCodes.internalServerError).json({message: "Failed to delete product", error: error.message,
+    res.status(statusCodes.internalServerError).json({message: messages.bad_request
     });
   }
 };
 
-// export const purchaseProduct = async (req, res) => {
-//   const { productId } = req.params;
-//   const { quantity } = req.body;
-
-//   try {
-//     const updatedProduct = await handlePurchase(productId, quantity);
-//     res.status(statusCodes.ok).json(updatedProduct);
-//   } catch (error) {
-//     res.status(statusCodes.internalServerError).json({ message: error.message });
-//   }
-// };
-
-// export const orderProduct = async (req, res) => {
-//   const { productId } = req.params;
-//   const { quantity } = req.body;
-
-//   try {
-//     const updatedProduct = await handleOrder(productId, quantity);
-//     res.status(statusCodes.ok).json(updatedProduct);
-//   } catch (error) {
-//     res.status(statusCodes.internalServerError).json({ message: error.message });
-//   }
-// };

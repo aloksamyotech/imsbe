@@ -20,7 +20,6 @@ export const fetch_unit = async (req, res) => {
     };
   }
   catch (error) {
-    console.error(error);
     res.status(statusCodes.internalServerError).json(error);
   }
 };
@@ -28,18 +27,14 @@ export const fetch_unit = async (req, res) => {
 export const updateUnit = async (req, res) => {
   const { id } = req.params; 
   const updateData = req.body; 
-
   try {
     const updatedUnit = await update(id, updateData);
-
     if (!updatedUnit) {
-      return res.status(404).json({ message: messages.not_found });
+      return res.status(statusCodes.notFound).json({ message: messages.not_found });
     }
-
-    return res.status(200).json(updatedUnit);
+    return res.status(statusCodes.ok).json(updatedUnit);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: messages.server_error });
+    return res.status(statusCodes.internalServerError).json({ message: messages.server_error });
   }
 };
 
@@ -47,12 +42,12 @@ export const deleteUnit = async (req, res) => {
   try {
       const id = req.params.id;
       await deleteById(id);
-      res.status(200).json({ msg: messages.data_deletion_success });
+      res.status(statusCodes.ok).json({ msg: messages.data_deletion_success });
   } catch (error) {
       if (error.message === messages.not_found) {
-          return res.status(404).json({ msg: messages.data_not_found });
+          return res.status(statusCodes.notFound).json({ msg: messages.data_not_found });
       }
-      res.status(500).json({ error: error.message });
+      res.status(statusCodes.internalServerError).json({ error: error.message });
   }
 };
 

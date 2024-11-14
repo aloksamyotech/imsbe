@@ -1,5 +1,5 @@
 import  PurchaseSchemaModel from "../models/purchase.js";
-import { tableNames } from "../common/constant.js";
+import { tableNames , messages} from "../common/constant.js";
 import SupplierSchemaModel from "../models/supplier.js";
 import ProductSchemaModel from "../models/products.js";
 import mongoose from "mongoose";
@@ -8,7 +8,7 @@ export const save = async (req) => {
   const updateProductQuantity = async (productId, quantity) => {
     const product = await ProductSchemaModel.findById(productId);
     if (!product) {
-      throw new Error(`Product not found: ${productId}`);
+      throw new Error(`${messages.data_not_found} ${productId}`);
     }
     product.quantity = (Number(product.quantity) || 0) + Number(quantity);
     await product.save();
@@ -26,14 +26,14 @@ export const save = async (req) => {
 
     const supplier = await SupplierSchemaModel.findById(supplierId);
     if (!supplier) {
-      throw new Error("Supplier not found.");
+      throw new Error(messages.data_not_found);
     }
 
     const productOrders = [];
     for (const product of products) {
       const dbProduct = await ProductSchemaModel.findById(product.productId); 
       if (!dbProduct) {
-        throw new Error(`Product not found: ${product.productId}`);
+        throw new Error(`${messages.data_not_found} ${product.productId}`);
       }
 
       productOrders.push({
@@ -58,11 +58,9 @@ export const save = async (req) => {
       supplierEmail: supplier.email,
       supplierPhone: supplier.phone,
     });
-    await purchaseModel.save();
-    return purchaseModel;
+    return await purchaseModel.save();
   } catch (error) {
-    console.error("Error saving purchase:", error);
-    throw new Error("Purchase could not be saved: " + error.message);
+    throw new Error(messages.data_add_error + error.message);
   }
 };
 
@@ -115,19 +113,16 @@ export const fetch = async (req) => {
       },
       { $sort: { createdAt: -1 } },
     ];
-
-    const purchaseList = await PurchaseSchemaModel.aggregate(pipeline);
-    return purchaseList;
+    return await PurchaseSchemaModel.aggregate(pipeline);
   } catch (error) {
-    console.error("Error fetching purchase:", error);
-    throw new Error("Failed to fetch purchase: " + error.message);
+    throw new Error(messages.fetching_failed + error.message);
   }
 };
 
 export const fetchById = async (id) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error("Invalid ID format");
+      throw new Error(messages.invalid_format);
     }
 
     const condition_obj = { _id: new mongoose.Types.ObjectId(id) };
@@ -182,39 +177,35 @@ export const fetchById = async (id) => {
 
     const purchase = await PurchaseSchemaModel.aggregate(pipeline);
     if (!purchase.length) {
-      throw new Error("purchase not found");
+      throw new Error(messages.data_not_found);
     }
     return purchase[0]; 
   } catch (error) {
-    console.error("Error fetching purchase by ID:", error);
-    throw new Error("Failed to fetch purchase: " + error.message);
+    throw new Error(messages.fetching_failed+ error.message);
   }
 };
 
 export const deleteById = async (id) => {
   const purchase = await PurchaseSchemaModel.findById(id);
   if (!purchase) {
-    throw new Error("Purchase not found");
+    throw new Error(messages.data_not_found);
   }
-  await purchase.save(); 
-  return purchase;
+  return await purchase.save(); 
 };
 
 export const approvePurchase = async (id) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error("Invalid ID format");
+      throw new Error(messages.invalid_format);
     }
     const purchase = await PurchaseSchemaModel.findById(id);
     if (!purchase) {
-      throw new Error("Purchase not found");
+      throw new Error(messages.invalid_format);
     }
     purchase.status = 'Completed';
-    await purchase.save();
-    return purchase;
+    return await purchase.save();
   } catch (error) {
-    console.error("Error approving purchase:", error);
-    throw new Error("Failed to approve purchase: " + error.message);
+    throw new Error(messages.data_add_success + error.message);
   }
 };
 

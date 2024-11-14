@@ -1,5 +1,5 @@
+import { messages } from "../common/constant.js";
 import CategorySchemaModel from "../models/category.js";
-import url from "url";
 
 export const save = async (req) => {
   try {
@@ -10,7 +10,6 @@ export const save = async (req) => {
     });
     return await categoryModel.save();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -21,7 +20,6 @@ export const fetch = async (req) => {
     const categoryList = await CategorySchemaModel.find({...condition_obj, isDeleted: false,});
     return categoryList;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -35,7 +33,6 @@ export const update = async (id, updateData) => {
     );
     return updatedCategory;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -43,9 +40,8 @@ export const update = async (id, updateData) => {
 export const deleteById = async (id) => {
   const category = await CategorySchemaModel.findById(id);
   if (!category) {
-    throw new Error("category not found");
+    throw new Error(messages.data_not_found);
   }
   category.isDeleted = true;
-  await category.save();
-  return category;
+  return await category.save();
 };

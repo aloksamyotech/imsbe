@@ -1,6 +1,6 @@
 import  PurchaseSchemaModel from "../models/purchase.js";
 import OrderSchemaModel from "../models/orders.js";
-import { tableNames } from "../common/constant.js";
+import { tableNames , messages} from "../common/constant.js";
 
 export const fetchSupplierProductReport = async (req) => {
     try {
@@ -48,11 +48,9 @@ export const fetchSupplierProductReport = async (req) => {
         { $sort: { createdAt: -1 } },
       ];
   
-      const report = await PurchaseSchemaModel.aggregate(pipeline);
-      return report;
+      return await PurchaseSchemaModel.aggregate(pipeline);
     } catch (error) {
-      console.error("Error fetching report:", error);
-      throw new Error("Failed to fetch report: " + error.message);
+      throw new Error(messages.fetching_failed + error.message);
     }
   };
   
@@ -103,11 +101,9 @@ export const fetchSupplierProductReport = async (req) => {
         { $sort: { createdAt: -1 } },
       ];
   
-      const report = await OrderSchemaModel.aggregate(pipeline);
-      return report;
+      return await OrderSchemaModel.aggregate(pipeline);
     } catch (error) {
-      console.error("Error fetching report:", error);
-      throw new Error("Failed to fetch report: " + error.message);
+      throw new Error(messages.fetching_failed + error.message);
     }
   };
   

@@ -6,8 +6,8 @@ export const create = async (req, res) => {
     const customerResponse = await save(req)
     res.status(statusCodes.ok).json(customerResponse);
   } catch (error) {
-    res.status(statusCodes.created).json({
-      error: error
+    res.status(statusCodes.internalServerError).json({
+      message : messages.data_add_error
     })
   }
 }
@@ -20,10 +20,7 @@ export const fetch_customer = async (req, res) => {
     }
   }
   catch (error) {
-    console.error(error);
-    res.status(statusCodes.internalServerError).json({
-      error: error.message || 'An error occurred while fetching the customers.'
-    });
+    res.status(statusCodes.internalServerError).json({message:messages.fetching_failed});
   }
 };
 
@@ -31,10 +28,8 @@ export const fetch_customer = async (req, res) => {
 export const updateCustomer = async (req, res) => {
   const id  = req.params.id; 
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: 'Customer ID is required' });
+    return res.status(statusCodes.badRequest).json(messages.required );
   }
-
-  console.log('Updating customer with ID:', id);
   const updateData = req.body; 
   try {
     const updatedCustomer = await update(id, updateData);
@@ -43,10 +38,8 @@ export const updateCustomer = async (req, res) => {
     }
     return res.status(statusCodes.ok).json(updatedCustomer);
   } catch (error) {
-    console.error("Error updating customer:", error);
     return res.status(statusCodes.internalServerError).json({ 
-      message: "Failed to update customer", 
-      error: error.message 
+      message: messages.data_update_error
     });
   }
 };
@@ -54,7 +47,7 @@ export const updateCustomer = async (req, res) => {
 export const deleteCustomer = async (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(statusCodes.badRequest).json({ message: "customer ID is required" });
+    return res.status(statusCodes.badRequest).json({ message: messages.required });
   }
   try {
     await deleteById(id);
@@ -63,11 +56,7 @@ export const deleteCustomer = async (req, res) => {
     if (error.message === messages.not_found) {
       return res.status(statusCodes.notFound).json({ message: messages.data_not_found });
     }
-    console.error("Error deleting customer:", error);
-    res.status(statusCodes.internalServerError).json({ 
-      message: "Failed to delete customer", 
-      error: error.message 
-    });
+    res.status(statusCodes.internalServerError).json({message : messages.bad_request});
   }
 };
 

@@ -32,7 +32,6 @@ export const fetch = async (req) => {
     });
     return usersList;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -42,7 +41,7 @@ export const fetchById = async (id) => {
     const user = await UserSchemaModel.findById(id);
     return user; 
   } catch (error) {
-    throw new Error('Error fetching user details: ' + error.message);
+    throw new Error(messages.fetching_failed + error.message);
   }
 };
 
@@ -69,7 +68,6 @@ export const login = async (email, password) => {
 
     return { success: true, jwtToken, user: payload };
   } catch (error) {
-    console.error(error);
     return { success: false, message: messages.server_error };
   }
 };
@@ -82,19 +80,18 @@ export const update = async (id, updateData) => {
           { new: true }
       );
       if (!updatedUser || updatedUser.isDeleted) {
-          throw new Error("User not found or already deleted");
+          throw new Error(messages.data_not_found);
       }
       return updatedUser;
   } catch (error) {
-      console.error("Error updating User:", error);
-      throw new Error("Failed to update User");
+      throw new Error(messages.data_add_error);
   }
 };
 
 export const deleteById = async (id) => {
   const user = await UserSchemaModel.findById(id);
   if (!user) {
-    throw new Error("user not found");
+    throw new Error(messages.data_not_found);
   }
   user.isDeleted = true;
   await user.save();
@@ -121,7 +118,6 @@ export const changePasswordService = async (userId, currentPassword, newPassword
 
     return { success: true, message: messages.password_changed_successfully };
   } catch (error) {
-    console.error(error);
     return { success: false, message: messages.server_error };
   }
 };
