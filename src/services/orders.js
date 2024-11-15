@@ -18,7 +18,7 @@ const generateInvoicePDF = async (orderData) => {
 
   const filePath = path.join(
     __dirname,
-    "../invoices",
+    "../uploads/invoices",
     `invoice-${orderData._id}.pdf`
   );
 
