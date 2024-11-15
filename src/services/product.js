@@ -16,7 +16,7 @@ export const save = async (req, res) => {
       categoryId,
       unitId,
     } = req.body;
- 
+  
     const category = await CategorySchemaModel.findById(categoryId);
     if (!category) {
       throw new Error(messages.data_not_found);
@@ -39,6 +39,7 @@ export const save = async (req, res) => {
       categoryName: category.catnm,
       unitId: unit._id,
       unitName: unit.unitnm,
+      image: req.file ? req.file.path : null, 
     });
     return await productModel.save();
   } catch (error) {
